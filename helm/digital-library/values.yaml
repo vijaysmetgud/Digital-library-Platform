@@ -1,6 +1,16 @@
+# replicaCount: 2
+
+# service:
+#   type: ClusterIP
+#   port: 80
+#   targetPort: 80
+
 replicaCount: 2
+
+image:
+  repository: nginx
+  tag: alpine
 
 service:
   type: ClusterIP
   port: 80
-  targetPort: 80

@@ -14,10 +14,21 @@ spec:
     spec:
       containers:
         - name: web
-          image: digital-library-frontend:v3
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 80
+          - containerPort: 80
+          volumeMounts:
+          - name: content
+            mountPath: /content
+            readOnly: true
+
+      # containers:
+      #   - name: web
+      #     image: digital-library-frontend:v3
+      #     imagePullPolicy: IfNotPresent
+      #     ports:
+      #       - containerPort: 80
 
       # containers:
       #   - name: web

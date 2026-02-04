@@ -1,4 +1,10 @@
-service:
-  port: 80
-  targetPort: 80
+# service:
+#   port: 80
+#   targetPort: 80
+# replicaCount: 2
+
 replicaCount: 2
+
+image:
+  repository: digital-library-secure
+  tag: latest
