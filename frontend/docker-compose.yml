@@ -1,0 +1,9 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+      - /run/desktop/mnt/host/e:/content:ro
+    ports:
+      - "8080:80"

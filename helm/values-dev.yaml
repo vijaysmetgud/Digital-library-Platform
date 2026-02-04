@@ -1,4 +1,0 @@
-replicaCount: 1
-env: dev
-storage:
-  hostPath: /run/desktop/mnt/host/e

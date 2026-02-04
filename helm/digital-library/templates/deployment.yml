@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digital-library
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: digital-library
+  template:
+    metadata:
+      labels:
+        app: digital-library
+    spec:
+      containers:
+        - name: web
+          image: digital-library-frontend:v3
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+
+      # containers:
+      #   - name: web
+      #     image: apline:latest
+      #     imagePullPolicy: IfNotPresent
+      #     ports:
+      #       - containerPort: 80
+          # volumeMounts:
+          #   - name: content
+          #     mountPath: /content
+          #     readOnly: true
+      # volumes:
+      #   - name: content
+      #     hostPath:
+      #       path: /run/desktop/mnt/host/e
+      #       type: Directory

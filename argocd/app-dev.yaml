@@ -7,12 +7,10 @@ spec:
     namespace: dev
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://github.com/<your-repo>
+    repoURL: https://github.com/YOUR_GITHUB/digital-library-platform
     path: helm/digital-library
-    targetRevision: main
     helm:
       valueFiles:
-        - values-dev.yaml
+      - values-dev.yaml
   syncPolicy:
-    automated:
-      selfHeal: true
+    automated: {}
