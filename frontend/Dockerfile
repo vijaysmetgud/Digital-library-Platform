@@ -1,10 +1,12 @@
 FROM nginx:alpine
 
-# Remove default config
-RUN rm /etc/nginx/conf.d/default.conf
+RUN mkdir -p /usr/share/nginx/html/assets \
+    && chmod -R 755 /usr/share/nginx/html
 
-# Custom nginx config
+COPY index.html /usr/share/nginx/html/
+COPY style.css /usr/share/nginx/html/
+COPY app.js /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy website
-COPY . /usr/share/nginx/html
+
+

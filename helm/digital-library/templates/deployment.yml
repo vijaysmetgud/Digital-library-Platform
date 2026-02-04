@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: digital-library
 spec:
-  replicas: {{ .Values.replicaCount | default 1 }}
+  replicas: 2
   selector:
     matchLabels:
       app: digital-library
@@ -14,34 +14,15 @@ spec:
     spec:
       containers:
         - name: web
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: IfNotPresent
+          image: digital-library-secure:v4
           ports:
-          - containerPort: 80
+            - containerPort: 80
           volumeMounts:
-          - name: content
-            mountPath: /content
-            readOnly: true
+            - name: media
+              mountPath: /usr/share/nginx/html/assets
 
-      # containers:
-      #   - name: web
-      #     image: digital-library-frontend:v3
-      #     imagePullPolicy: IfNotPresent
-      #     ports:
-      #       - containerPort: 80
-
-      # containers:
-      #   - name: web
-      #     image: apline:latest
-      #     imagePullPolicy: IfNotPresent
-      #     ports:
-      #       - containerPort: 80
-          # volumeMounts:
-          #   - name: content
-          #     mountPath: /content
-          #     readOnly: true
-      # volumes:
-      #   - name: content
-      #     hostPath:
-      #       path: /run/desktop/mnt/host/e
-      #       type: Directory
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: digital-library-media
+       

@@ -7,4 +7,4 @@ replicaCount: 2
 
 image:
   repository: digital-library-secure
-  tag: latest
+  tag: v6
