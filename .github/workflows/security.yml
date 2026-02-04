@@ -2,29 +2,32 @@ name: Security
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
 
 jobs:
   zap:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    # Start a temporary app (replace with your real app later)
-    - name: Start demo app
+    - name: Start test app
       run: |
         docker run -d -p 8080:80 nginx
         sleep 10
 
-    - name: OWASP ZAP Baseline Scan
+    - name: ZAP Baseline Scan
       uses: zaproxy/action-baseline@v0.10.0
       with:
-        target: "http://localhost:8080"
+        target: http://localhost:8080
         fail_action: false
 
-    - name: Upload ZAP Report
+    - name: Upload ZAP report
       uses: actions/upload-artifact@v4
       with:
         name: zap-report
