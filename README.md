@@ -3,6 +3,7 @@
 A full-stack digital content platform built with:
 
 - Frontend: HTML, CSS, JS
+- Backend: Database
 - Containerized with Docker & Nginx
 - Kubernetes (Docker Desktop)
 - Helm (multi-env)

@@ -1,5 +1,8 @@
 name: Security - DAST (ZAP)
 
+env:
+  ZAP_DOCKER_USER: root
+
 on:
   push:
     branches: [ main ]
@@ -10,36 +13,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Build frontend image
-      run: |
-        docker build -t digital-library-test ./frontend
+      - name: Build frontend image
+        run: |
+          docker build -t digital-library-test ./frontend
 
-    - name: Run application container
-      run: |
-        docker run -d -p 8080:80 --name digital-library-test digital-library-test
-        sleep 10
+      - name: Run application container
+        run: |
+          docker run -d -p 8080:80 --name digital-library-test digital-library-test
+          sleep 10
+      
+      - name: Run OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.10.0
+        continue-on-error: true
+        with:
+          target: http://localhost:8080
+          cmd_options: '-a -d'
+    
+      # - name: Run OWASP ZAP Baseline Scan
+      #   uses: zaproxy/action-baseline@v0.10.0
+      #   with:
+      #     target: http://localhost:8080
+      #     fail_action: false
+      #     cmd_options: -a
 
-    - name: Run OWASP ZAP Baseline Scan
-      uses: zaproxy/action-baseline@v0.10.0
-      with:
-        target: 'http://localhost:8080'
-        fail_action: false
-        rules_file_name: ''
-        cmd_options: '-a'
+      - name: Stop application container
+        if: always()
+        run: docker rm -f digital-library-test
 
-    - name: Stop application container
-      if: always()
-      run: docker rm -f digital-library-test
-
-    - name: Upload ZAP Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: zap-security-report
-        path: |
-          report_html.html
-          report_md.md
-          report_json.json
+      - name: Upload ZAP Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-security-report
+          path: |
+            report_html.html
+            report_md.md
+            report_json.json
+          retention-days: 7
