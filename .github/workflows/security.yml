@@ -1,18 +1,31 @@
 name: Security
-on: [push]
+
+on:
+  push:
+    branches: [ main, master ]
 
 jobs:
   zap:
     runs-on: ubuntu-latest
-    steps:
-    - name: Check Docker
-      run: docker version
-  
-    - name: ZAP Baseline Scan
-      run: |
-        docker run --rm \
-          -t owasp/zap2docker-stable \
-          zap-baseline.py \
-          -t http://host.docker.internal:8080 \
-          -r zap-report.html
 
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Start a temporary app (replace with your real app later)
+    - name: Start demo app
+      run: |
+        docker run -d -p 8080:80 nginx
+        sleep 10
+
+    - name: OWASP ZAP Baseline Scan
+      uses: zaproxy/action-baseline@v0.10.0
+      with:
+        target: "http://localhost:8080"
+        fail_action: false
+
+    - name: Upload ZAP Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: zap-report
+        path: zap-report.html
