@@ -8,8 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Frontend
-        run: docker build -t frontend ./frontend
+      - name: Build backend Docker image
+        run: docker build -t digital-library-backend ./backend
 
-      - name: Build Backend
-        run: docker build -t backend ./backend
+      - name: Build frontend Docker image
+        run: docker build -t digital-library-frontend ./frontend
