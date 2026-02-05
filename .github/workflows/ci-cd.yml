@@ -34,8 +34,7 @@ jobs:
       - name: Build frontend Docker image
         run: |
           docker build \
-            -t ${{ secrets.DOCKER_USERNAME }}/digital-library-frontend:${{ github.sha }} \
-            ./frontend
+            -t ${{ secrets.DOCKER_USERNAME }}/digital-library-frontend:${{ github.sha }} -f ./frontend/Dockerfile
 
       # -------------------------
       # Push Docker Image
