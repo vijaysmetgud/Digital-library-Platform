@@ -1,0 +1,11 @@
+﻿{
+  "agentId": 21,
+  "agentName": "MSI",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus15.actions.githubusercontent.com/8EG9rOpt3UOzua2c9zkzS0Mt63agvDbhvSTEROUPzyo2qfFNov/",
+  "gitHubUrl": "https://github.com/vijaysmetgud/Digital-library-Platform",
+  "workFolder": "_work",
+  "useV2Flow": true,
+  "serverUrlV2": "https://broker.actions.githubusercontent.com/"
+}
