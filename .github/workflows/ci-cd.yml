@@ -45,10 +45,23 @@ jobs:
           # -------------------------
       # Set Kubernetes Context
       # -------------------------
-      - name: Set kubeconfig
+      - name: Setup kubeconfig directory
+        shell: powershell
         run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
+          New-Item -ItemType Directory -Force -Path "$HOME\.kube"
+
+      - name: Set kubeconfig
+        shell: powershell
+        run: |
+          $kubeconfig = "${{ secrets.KUBE_CONFIG }}"
+          $bytes = [System.Convert]::FromBase64String($kubeconfig)
+          [System.IO.File]::WriteAllBytes("$HOME\.kube\config", $bytes)
+    
+  
+      # - name: Set kubeconfig
+      #   run: |
+      #     mkdir -p ~/.kube
+      #     echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
 
       # -------------------------
       # Helm Deploy
