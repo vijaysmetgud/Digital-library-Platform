@@ -67,9 +67,18 @@ jobs:
       # Helm Deploy
       # -------------------------
       - name: Deploy with Helm
+        shell: powershell
         run: |
-          helm upgrade --install digital-library ./helm/digital-library \
-            -n dev \
-            --create-namespace \
-            --set image.repository=${{ secrets.DOCKER_USERNAME }}/digital-library-frontend \
+          helm upgrade --install digital-library ./helm/digital-library `
+            -n dev `
+            --create-namespace `
+            --set image.repository=${{ secrets.DOCKER_USERNAME }}/digital-library-frontend `
             --set image.tag=${{ github.sha }}
+  
+      # - name: Deploy with Helm
+      #   run: |
+      #     helm upgrade --install digital-library ./helm/digital-library \
+      #       -n dev \
+      #       --create-namespace \
+      #       --set image.repository=${{ secrets.DOCKER_USERNAME }}/digital-library-frontend \
+      #       --set image.tag=${{ github.sha }}
