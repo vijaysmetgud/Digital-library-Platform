@@ -1,12 +1,11 @@
 replicaCount: 2
 
 image:
-  repository: digital-library-secure   # default (overridden by CI)
-  tag: latest
-  pullPolicy: IfNotPresent
+  repository: digital-library-secure   # overridden by CI
+  tag: a00425209061b48a913c95ffaacebca74112bc55                            # placeholder only
+  pullPolicy: Always                  # ✅ REQUIRED
 
 service:
   type: NodePort
   port: 80
   nodePort: 30080
-
