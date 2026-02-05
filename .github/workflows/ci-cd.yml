@@ -100,13 +100,13 @@ jobs:
     # -------------------------
     # PORT FORWARDING SERVICE 
     # -------------------------
-    - name: Port-forward service
-      shell: powershell
-      run: |
-        Start-Process kubectl `
-          -ArgumentList "port-forward svc/digital-library-service 8080:80 -n dev" `
-          -NoNewWindow
-        Start-Sleep -Seconds 5
+    # - name: Port-forward service
+    #   shell: powershell
+    #   run: |
+    #     Start-Process kubectl `
+    #       -ArgumentList "port-forward svc/digital-library-service 8080:80 -n dev" `
+    #       -NoNewWindow
+    #     Start-Sleep -Seconds 5
 
     # -------------------------
     # (Optional) HTTP Health Check
