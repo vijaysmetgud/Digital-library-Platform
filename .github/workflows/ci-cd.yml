@@ -63,6 +63,13 @@ jobs:
       #     mkdir -p ~/.kube
       #     echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > ~/.kube/config
 
+      - name: Configure kubectl for Docker Desktop
+        shell: powershell
+        run: |
+          kubectl config use-context docker-desktop
+          kubectl get nodes
+
+
       # -------------------------
       # Helm Deploy
       # -------------------------
@@ -73,7 +80,10 @@ jobs:
             -n dev `
             --create-namespace `
             --set image.repository=${{ secrets.DOCKER_USERNAME }}/digital-library-frontend `
-            --set image.tag=${{ github.sha }}
+            --set image.tag=${{ github.sha }} `
+            --atomic `
+            --wait
+
   
       # - name: Deploy with Helm
       #   run: |
