@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: digital-library-secure:v4
+          image: digital-library-secure:v13
           ports:
             - containerPort: 80
           volumeMounts:
