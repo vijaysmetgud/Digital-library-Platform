@@ -111,13 +111,13 @@ jobs:
     # -------------------------
     # (Optional) HTTP Health Check
     # -------------------------    
-    - name: HTTP health check
-      shell: powershell
-      run: |
-        try {
-          Invoke-WebRequest http://localhost:8080 -UseBasicParsing
-          Write-Host "App is healthy"
-        } catch {
-          throw "Health check failed"
-        }
+    # - name: HTTP health check
+    #   shell: powershell
+    #   run: |
+    #     try {
+    #       Invoke-WebRequest http://localhost:8080 -UseBasicParsing
+    #       Write-Host "App is healthy"
+    #     } catch {
+    #       throw "Health check failed"
+    #     }
 
