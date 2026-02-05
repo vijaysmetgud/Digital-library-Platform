@@ -1,15 +1,9 @@
-# replicaCount: 2
-
-# service:
-#   type: ClusterIP
-#   port: 80
-#   targetPort: 80
-
 replicaCount: 2
 
 image:
-  repository: nginx
-  tag: alpine
+  repository: digital-library-secure   # default (overridden by CI)
+  tag: latest
+  pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP

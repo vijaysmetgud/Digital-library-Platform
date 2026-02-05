@@ -14,12 +14,22 @@ spec:
     spec:
       containers:
         - name: web
-          image: digital-library-secure:v13
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: 80
           volumeMounts:
             - name: media
               mountPath: /usr/share/nginx/html/assets
+
+      # containers:
+      #   - name: web
+      #     image: digital-library-secure:v13
+      #     ports:
+      #       - containerPort: 80
+      #     volumeMounts:
+      #       - name: media
+      #         mountPath: /usr/share/nginx/html/assets
 
       volumes:
         - name: media
