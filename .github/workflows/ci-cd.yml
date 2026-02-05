@@ -121,3 +121,11 @@ jobs:
     #       throw "Health check failed"
     #     }
 
+    - name: In-cluster HTTP check
+      shell: powershell
+      run: |
+        kubectl run curl-test `
+          --rm -i --restart=Never `
+          --image=curlimages/curl `
+          -- `
+          curl -f http://digital-library-service.${{ env.ENVIRONMENT }}.svc.cluster.local
