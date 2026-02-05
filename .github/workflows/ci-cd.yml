@@ -97,9 +97,9 @@ jobs:
         echo "The pods are running in the ${{ env.ENVIRONMENT }} namespace."
 
 
-    -------------------------
-    (Optional) HTTP Health Check
-    -------------------------
+    # -------------------------
+    # (Optional) HTTP Health Check
+    # -------------------------
     - name: Application health check
       run: |
         curl -f http://localhost:8080 || exit 1
