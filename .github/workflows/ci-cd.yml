@@ -45,17 +45,17 @@ jobs:
           # -------------------------
       # Set Kubernetes Context
       # -------------------------
-      - name: Setup kubeconfig directory
-        shell: powershell
-        run: |
-          New-Item -ItemType Directory -Force -Path "$HOME\.kube"
+      # - name: Setup kubeconfig directory
+      #   shell: powershell
+      #   run: |
+      #     New-Item -ItemType Directory -Force -Path "$HOME\.kube"
 
-      - name: Set kubeconfig
-        shell: powershell
-        run: |
-          $kubeconfig = "${{ secrets.KUBE_CONFIG }}"
-          $bytes = [System.Convert]::FromBase64String($kubeconfig)
-          [System.IO.File]::WriteAllBytes("$HOME\.kube\config", $bytes)
+      # - name: Set kubeconfig
+      #   shell: powershell
+      #   run: |
+      #     $kubeconfig = "${{ secrets.KUBE_CONFIG }}"
+      #     $bytes = [System.Convert]::FromBase64String($kubeconfig)
+      #     [System.IO.File]::WriteAllBytes("$HOME\.kube\config", $bytes)
     
   
       # - name: Set kubeconfig
