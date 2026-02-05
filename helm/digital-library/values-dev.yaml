@@ -3,9 +3,12 @@
 #   targetPort: 80
 # replicaCount: 2
 
-# replicaCount: 2
+replicaCount: 2
+image:
+  repository: vsmetgud/digital-library-frontend
+  tag: dev
 
-# image:
-#   repository: digital-library-secure
-#   tag: latest
-#   pullPolicy: IfNotPresent
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30080  
