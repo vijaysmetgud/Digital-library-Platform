@@ -98,8 +98,25 @@ jobs:
 
 
     # -------------------------
-    # (Optional) HTTP Health Check
+    # PORT FORWARDING SERVICE 
     # -------------------------
-    - name: Application health check
+    - name: Port-forward service
+      shell: powershell
       run: |
-        curl -f http://localhost:8080 || exit 1
+        kubectl port-forward svc/digital-library-service `
+          8080:80 -n ${{ env.ENVIRONMENT }} &
+        Start-Sleep -Seconds 5
+  
+    # -------------------------
+    # (Optional) HTTP Health Check
+    # -------------------------    
+    - name: HTTP health check
+      shell: powershell
+      run: |
+        try {
+          Invoke-WebRequest http://localhost:8080 -UseBasicParsing
+          Write-Host "App is healthy"
+        } catch {
+          throw "Health check failed"
+        }
+
