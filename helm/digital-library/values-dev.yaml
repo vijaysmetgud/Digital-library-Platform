@@ -3,8 +3,8 @@
 #   targetPort: 80
 # replicaCount: 2
 
-replicaCount: 2
+# replicaCount: 2
 
-image:
-  repository: digital-library-secure
-  tag: v6
+# image:
+#   repository: digital-library-secure
+#   tag: v6
