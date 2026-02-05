@@ -7,4 +7,5 @@
 
 # image:
 #   repository: digital-library-secure
-#   tag: v6
+#   tag: latest
+#   pullPolicy: IfNotPresent
