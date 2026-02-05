@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: digital-library
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: digital-library
@@ -15,24 +15,14 @@ spec:
       containers:
         - name: web
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           volumeMounts:
             - name: media
               mountPath: /usr/share/nginx/html/assets
 
-      # containers:
-      #   - name: web
-      #     image: digital-library-secure:v13
-      #     ports:
-      #       - containerPort: 80
-      #     volumeMounts:
-      #       - name: media
-      #         mountPath: /usr/share/nginx/html/assets
-
       volumes:
         - name: media
           persistentVolumeClaim:
             claimName: digital-library-media
-       
