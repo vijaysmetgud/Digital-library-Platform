@@ -100,13 +100,35 @@ jobs:
     # -------------------------
     # PORT FORWARDING SERVICE 
     # -------------------------
-    - name: Port-forward service
+    # - name: Port-forward service
+    #   shell: powershell
+    #   run: |
+    #     Start-Process kubectl `
+    #       -ArgumentList "port-forward svc/digital-library-service 8080:80 -n ${{ env.ENVIRONMENT }}" `
+    #       -NoNewWindow
+    #     Start-Sleep -Seconds 5
+
+
+    - name: Health check via NodePort
       shell: powershell
       run: |
-        Start-Process kubectl `
-          -ArgumentList "port-forward svc/digital-library-service 8080:80 -n ${{ env.ENVIRONMENT }}" `
-          -NoNewWindow
-        Start-Sleep -Seconds 5
+        $nodePort = kubectl get svc digital-library-service `
+          -n ${{ env.ENVIRONMENT }} `
+          -o jsonpath="{.spec.ports[0].nodePort}"
+
+        Write-Host "NodePort is $nodePort"
+
+        $url = "http://localhost:$nodePort"
+        Write-Host "Checking $url"
+
+        try {
+          Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 10
+          Write-Host "✅ Application is healthy"
+        }
+        catch {
+          Write-Error "❌ Application health check failed"
+          exit 1
+        }
 
     # -------------------------
     # (Optional) HTTP Health Check
