@@ -44,6 +44,31 @@ jobs:
             -n ${{ env.NAMESPACE }} `
             -f helm/digital-library/values-dev.yaml `
             --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} `
-            --set image.tag=${{ github.sha }} `
-            # --wait
+            --set image.tag=${{ github.sha }}
 
+      # -------------------------
+      # Post-deploy verification
+      # -------------------------
+      - name: Verify deployment
+        shell: powershell
+        run: |
+          kubectl rollout status deployment/digital-library -n ${{ env.NAMESPACE }}
+          kubectl get pods -n ${{ env.NAMESPACE }}
+          kubectl get svc -n ${{ env.NAMESPACE }}
+
+      # -------------------------
+      # Port-forward instructions (CI-safe)
+      # -------------------------
+      - name: Application access (Port Forward)
+        shell: powershell
+        run: |
+          Write-Host ""
+          Write-Host "✅ Deployment successful!"
+          Write-Host ""
+          Write-Host "👉 To access the application locally, run the following command on your machine:"
+          Write-Host ""
+          Write-Host "kubectl port-forward svc/digital-library-service 8080:80 -n dev"
+          Write-Host ""
+          Write-Host "🌐 Then open in browser:"
+          Write-Host "http://localhost:8080"
+          Write-Host ""
