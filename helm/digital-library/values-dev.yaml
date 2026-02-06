@@ -1,9 +1,6 @@
-replicaCount: 2
-
 image:
   repository: vsmetgud/digital-library-frontend
-  tag: 968d708a5ca21f86d810cefeb836904f8d7aba3c
-  pullPolicy: IfNotPresent
+  tag: latest
 
 service:
   type: NodePort

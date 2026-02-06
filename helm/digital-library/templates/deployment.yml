@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: digital-library
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 2
   selector:
     matchLabels:
       app: digital-library
@@ -13,14 +13,30 @@ spec:
         app: digital-library
     spec:
 
+      # 🔹 INIT CONTAINER
+      initContainers:
+        - name: media-init
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+            - sh
+            - -c
+            - |
+              echo "Copying seed assets to PVC..."
+              if [ -z "$(ls -A /data)" ]; then
+                cp -r /seed-assets/* /data/
+              else
+                echo "PVC already has data, skipping copy"
+              fi
+          volumeMounts:
+            - name: media
+              mountPath: /data
+
+      # 🔹 MAIN CONTAINER
       containers:
         - name: digital-library
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-
           ports:
             - containerPort: 80
-
           volumeMounts:
             - name: media
               mountPath: /usr/share/nginx/html/assets
@@ -29,4 +45,3 @@ spec:
         - name: media
           persistentVolumeClaim:
             claimName: digital-library-media
-
