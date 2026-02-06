@@ -9,8 +9,10 @@ spec:
   selector:
     app: digital-library
   ports:
-    - port: {{ .Values.service.port }}
+    - name: http
+      port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
-      nodePort: {{ .Values.service.nodePort | default 30080 }}
       protocol: TCP
-      name: http
+      {{- if or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer") }}
+      nodePort: {{ .Values.service.nodePort | default 30080 }}
+      {{- end }}
