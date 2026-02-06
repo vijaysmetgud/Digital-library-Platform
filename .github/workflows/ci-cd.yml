@@ -59,16 +59,10 @@ jobs:
       # -------------------------
       # Port-forward instructions (CI-safe)
       # -------------------------
-      - name: Application access (Port Forward)
+      - name: Port forward
         shell: powershell
         run: |
-          Write-Host ""
-          Write-Host "✅ Deployment successful!"
-          Write-Host ""
-          Write-Host "👉 To access the application locally, run the following command on your machine:"
-          Write-Host ""
-          Write-Host "kubectl port-forward svc/digital-library-service 8080:80 -n dev"
-          Write-Host ""
-          Write-Host "🌐 Then open in browser:"
-          Write-Host "http://localhost:8080"
-          Write-Host ""
+          Start-Process kubectl `
+            -ArgumentList "port-forward svc/digital-library-service -n dev 8080:80" `
+            -NoNewWindow
+          Start-Sleep -Seconds 5
