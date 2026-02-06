@@ -1,122 +1,46 @@
-name: CI-CD Pipeline
+name: CI-CD Digital Library (DEV)
 
 on:
   push:
     branches:
       - main
 
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: "Deployment environment"
-        required: true
-        default: dev
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
-
 env:
   IMAGE_NAME: digital-library-frontend
-  ENVIRONMENT: ${{ github.event.inputs.environment || 'dev' }}
+  NAMESPACE: dev
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: self-hosted
 
     steps:
-    # -------------------------
-    # Checkout
-    # -------------------------
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # -------------------------
-    # Docker Login
-    # -------------------------
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      # -------------------------
+      # Docker build & push
+      # -------------------------
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login \
+            -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    # -------------------------
-    # Build Image
-    # -------------------------
-    - name: Build frontend Docker image
-      run: |
-        docker build `
-          -t ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} `
-          -f frontend/Dockerfile frontend
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} frontend
 
-    # -------------------------
-    # Push Image
-    # -------------------------
-    - name: Push Docker image
-      run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-    # -------------------------
-    # Kubernetes Context
-    # -------------------------
-    - name: Configure kubectl for Docker Desktop
-      shell: powershell
-      run: |
-        kubectl config use-context docker-desktop
-        kubectl get nodes
-
-    # -------------------------
-    # Helm Deploy
-    # -------------------------
-    - name: Deploy with Helm
-      shell: powershell
-      run: |
-        helm upgrade --install digital-library ./helm/digital-library `
-          -n ${{ env.ENVIRONMENT }} `
-          --create-namespace `
-          --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} `
-          --set image.tag=${{ github.sha }} `
-          # --atomic `
-          # --wait
-
-    # -------------------------
-    # Health Check (K8s)
-    # -------------------------
-    - name: Verify rollout status
-      shell: powershell
-      run: |
-        kubectl rollout status deployment/digital-library `
-          -n ${{ env.ENVIRONMENT }} `
-          --timeout=120s
-
-    - name: Verify pods
-      shell: powershell
-      run: |
-        kubectl get pods -n ${{ env.ENVIRONMENT }}
-        echo "The pods are running in the ${{ env.ENVIRONMENT }} namespace."
-
-
-    # -------------------------
-    # PORT FORWARDING SERVICE 
-    # -------------------------
-    - name: Port-forward service
-      shell: powershell
-      run: |
-        Start-Process kubectl `
-          -ArgumentList "port-forward svc/digital-library-service 8080:80 -n dev" `
-          -NoNewWindow
-        Start-Sleep -Seconds 5
-
-    # -------------------------
-    # (Optional) HTTP Health Check
-    # -------------------------    
-    # - name: HTTP health check
-    #   shell: powershell
-    #   run: |
-    #     try {
-    #       Invoke-WebRequest http://localhost:8080 -UseBasicParsing
-    #       Write-Host "App is healthy"
-    #     } catch {
-    #       throw "Health check failed"
-    #     }
+      # -------------------------
+      # Helm deploy
+      # -------------------------
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install digital-library ./helm/digital-library \
+            -n ${{ env.NAMESPACE }} \
+            -f helm/digital-library/values-dev.yaml \
+            --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} \
+            --set image.tag=${{ github.sha }} \
+            --wait
