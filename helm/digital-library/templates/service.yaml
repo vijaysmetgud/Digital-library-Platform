@@ -2,17 +2,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: digital-library-service
-  labels:
-    app: digital-library
 spec:
-  type: {{ .Values.service.type | default "ClusterIP" }}
+  type: NodePort
   selector:
     app: digital-library
   ports:
-    - name: http
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
-      {{- if or (eq .Values.service.type "NodePort") (eq .Values.service.type "LoadBalancer") }}
-      nodePort: {{ .Values.service.nodePort | default 30080 }}
-      {{- end }}
+    - port: 80
+      targetPort: 80
+      nodePort: 30080
