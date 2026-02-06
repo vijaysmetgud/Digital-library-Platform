@@ -9,7 +9,12 @@ image:
   tag: dev
   pullPolicy: Always  
 
+# service:
+#   type: NodePort
+#   port: 80
+#   nodePort: 30080  
+
+
 service:
-  type: NodePort
+  type: LoadBalancer
   port: 80
-  nodePort: 30080  

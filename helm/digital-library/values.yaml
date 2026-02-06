@@ -5,7 +5,12 @@ image:
   tag: a00425209061b48a913c95ffaacebca74112bc55                            # placeholder only
   pullPolicy: Always                  # ✅ REQUIRED
 
+# service:
+#   type: NodePort
+#   port: 80
+#   nodePort: 30080
+
+
 service:
-  type: NodePort
+  type: LoadBalancer
   port: 80
-  nodePort: 30080
