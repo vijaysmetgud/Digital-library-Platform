@@ -12,6 +12,24 @@ spec:
       labels:
         app: digital-library
     spec:
+
+      # 🔥 INIT CONTAINER (RUNS FIRST)
+      initContainers:
+        - name: init-media
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              echo "Copying media files..."
+              cp -r /media/* /assets/
+              ls -R /assets
+          volumeMounts:
+            - name: media
+              mountPath: /assets
+            - name: media-source
+              mountPath: /media
+
       containers:
         - name: digital-library
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -19,33 +37,18 @@ spec:
           ports:
             - containerPort: 80
 
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "500m"
-              memory: "256Mi"
-
-          livenessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 15
-            periodSeconds: 10
-
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 80
-            initialDelaySeconds: 5
-            periodSeconds: 5
-
           volumeMounts:
             - name: media
               mountPath: /usr/share/nginx/html/assets
 
       volumes:
+        # PVC (serving files)
         - name: media
           persistentVolumeClaim:
             claimName: digital-library-media
+
+        # SOURCE (where files come from)
+        - name: media-source
+          hostPath:
+            path: /digital-library-data
+            type: Directory
