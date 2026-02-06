@@ -108,7 +108,6 @@ jobs:
     #       -NoNewWindow
     #     Start-Sleep -Seconds 5
 
-
     - name: Health check via NodePort
       shell: powershell
       run: |
@@ -116,20 +115,24 @@ jobs:
           -n ${{ env.ENVIRONMENT }} `
           -o jsonpath="{.spec.ports[0].nodePort}"
 
-        Write-Host "NodePort is $nodePort"
+        $nodeIP = kubectl get nodes `
+          -o jsonpath="{.items[0].status.addresses[?(@.type=='InternalIP')].address}"
 
-        $url = "http://localhost:$nodePort"
+        Write-Host "NodeIP: $nodeIP"
+        Write-Host "NodePort: $nodePort"
+
+        $url = "http://$nodeIP:$nodePort"
         Write-Host "Checking $url"
 
         try {
-          Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 10
+          Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 15
           Write-Host "✅ Application is healthy"
         }
         catch {
           Write-Error "❌ Application health check failed"
           exit 1
         }
-
+        
     # -------------------------
     # (Optional) HTTP Health Check
     # -------------------------    
