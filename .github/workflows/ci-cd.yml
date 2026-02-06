@@ -80,8 +80,8 @@ jobs:
           --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} `
           --set image.tag=${{ github.sha }} `
           # --atomic `
-          --wait `
-          --timeout 2m
+          # --wait `
+          # --timeout 2m
 
     # -------------------------
     # Rollout Verification
