@@ -45,5 +45,5 @@ jobs:
             -f helm/digital-library/values-dev.yaml `
             --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} `
             --set image.tag=${{ github.sha }} `
-            --wait
+            # --wait
 
