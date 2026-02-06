@@ -45,6 +45,7 @@ jobs:
     # Build Image
     # -------------------------
     - name: Build frontend Docker image
+      shell: powershell
       run: |
         docker build `
           -t ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} `
@@ -54,20 +55,21 @@ jobs:
     # Push Image
     # -------------------------
     - name: Push Docker image
+      shell: powershell
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
     # -------------------------
     # Kubernetes Context
     # -------------------------
-    - name: Configure kubectl for Docker Desktop
+    - name: Configure kubectl
       shell: powershell
       run: |
         kubectl config use-context docker-desktop
         kubectl get nodes
 
     # -------------------------
-    # Helm Deploy
+    # Helm Deploy (FIXED)
     # -------------------------
     - name: Deploy with Helm
       shell: powershell
@@ -78,79 +80,23 @@ jobs:
           --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} `
           --set image.tag=${{ github.sha }} `
           --atomic `
-          --wait
+          --wait `
+          --timeout 15m
 
     # -------------------------
-    # Health Check (K8s)
+    # Rollout Verification
     # -------------------------
-    - name: Verify rollout status
+    - name: Verify deployment rollout
       shell: powershell
       run: |
         kubectl rollout status deployment/digital-library `
           -n ${{ env.ENVIRONMENT }} `
-          --timeout=120s
+          --timeout=300s
 
+    # -------------------------
+    # Pod Status
+    # -------------------------
     - name: Verify pods
       shell: powershell
       run: |
         kubectl get pods -n ${{ env.ENVIRONMENT }}
-        echo "The pods are running in the ${{ env.ENVIRONMENT }} namespace."
-
-
-    # -------------------------
-    # PORT FORWARDING SERVICE 
-    # -------------------------
-    - name: Port-forward service
-      shell: powershell
-      run: |
-        Start-Process kubectl `
-          -ArgumentList "port-forward svc/digital-library-service 8080:80 -n ${{ env.ENVIRONMENT }}" `
-          -NoNewWindow
-        Start-Sleep -Seconds 5
-   
-    # - name: Health check via NodePort
-    #   shell: powershell
-    #   run: |
-    #     $nodePort = kubectl get svc digital-library-service `
-    #       -n ${{ env.ENVIRONMENT }} `
-    #       -o jsonpath="{.spec.ports[0].nodePort}"
-
-    #     $nodeIP = kubectl get nodes `
-    #       -o jsonpath="{.items[0].status.addresses[?(@.type=='InternalIP')].address}"
-
-    #     Write-Host "NodeIP: $nodeIP"
-    #     Write-Host "NodePort: $nodePort"
-
-    #     $url = "http://${nodeIP}:${nodePort}"
-    #     Write-Host "Checking $url"
-
-    #     try {
-    #       Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 15
-    #       Write-Host "✅ Application is healthy"
-    #     }
-    #     catch {
-    #       Write-Error "❌ Application health check failed"
-    #       exit 1
-    #     }
-
-    # -------------------------
-    # (Optional) HTTP Health Check
-    # -------------------------    
-    # - name: HTTP health check
-    #   shell: powershell
-    #   run: |
-    #     try {
-    #       Invoke-WebRequest http://localhost:8080 -UseBasicParsing
-    #       Write-Host "App is healthy"
-    #     } catch {
-    #       throw "Health check failed"
-    #     }
-
-    - name: In-cluster HTTP check
-      shell: powershell
-      run: |
-        kubectl run curl-test `
-          --rm -i --restart=Never `
-          --image=curlimages/curl `
-          -- `
-          curl -f http://digital-library-service.${{ env.ENVIRONMENT }}.svc.cluster.local

@@ -27,7 +27,7 @@ const products = [
     name: "Intro Audio",
     price: 199,
     type: "audio",
-    file: "/assets/audio/intro.mp3",
+    file: "/assets/audios/intro.mp3",   // ✅ FIXED
     thumbnail: "/content/thumbnails/linux.jpg"
   }
 ];
@@ -43,7 +43,7 @@ products.forEach(p => {
   if (p.type === "pdf") {
     mediaHtml = `
       <img src="${p.thumbnail}" alt="${p.name}">
-      <a href="${p.file}" target="_blank">📘 View PDF</a>
+      <a href="${p.file}" target="_blank" download>📘 View / Download PDF</a>
     `;
   }
 
@@ -52,6 +52,7 @@ products.forEach(p => {
       <img src="${p.thumbnail}" alt="${p.name}">
       <video controls width="100%">
         <source src="${p.file}" type="video/mp4">
+        Your browser does not support video playback.
       </video>
     `;
   }
@@ -61,6 +62,7 @@ products.forEach(p => {
       <img src="${p.thumbnail}" alt="${p.name}">
       <audio controls>
         <source src="${p.file}" type="audio/mpeg">
+        Your browser does not support audio playback.
       </audio>
     `;
   }
