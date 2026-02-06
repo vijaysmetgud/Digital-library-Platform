@@ -107,7 +107,7 @@ jobs:
     #       -ArgumentList "port-forward svc/digital-library-service 8080:80 -n ${{ env.ENVIRONMENT }}" `
     #       -NoNewWindow
     #     Start-Sleep -Seconds 5
-
+   
     - name: Health check via NodePort
       shell: powershell
       run: |
@@ -121,7 +121,7 @@ jobs:
         Write-Host "NodeIP: $nodeIP"
         Write-Host "NodePort: $nodePort"
 
-        $url = "http://$nodeIP:$nodePort"
+        $url = "http://${nodeIP}:${nodePort}"
         Write-Host "Checking $url"
 
         try {
@@ -132,7 +132,7 @@ jobs:
           Write-Error "❌ Application health check failed"
           exit 1
         }
-        
+
     # -------------------------
     # (Optional) HTTP Health Check
     # -------------------------    
