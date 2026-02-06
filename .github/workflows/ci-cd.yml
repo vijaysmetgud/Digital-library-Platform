@@ -77,8 +77,8 @@ jobs:
           --create-namespace `
           --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} `
           --set image.tag=${{ github.sha }} `
-          --atomic `
-          --wait
+          # --atomic `
+          # --wait
 
     # -------------------------
     # Health Check (K8s)
