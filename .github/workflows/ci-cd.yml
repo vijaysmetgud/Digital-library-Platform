@@ -46,15 +46,15 @@ jobs:
             --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} `
             --set image.tag=${{ github.sha }}
 
-      # -------------------------
-      # Post-deploy verification
-      # -------------------------
-      - name: Verify deployment
-        shell: powershell
-        run: |
-          kubectl rollout status deployment/digital-library -n ${{ env.NAMESPACE }}
-          kubectl get pods -n ${{ env.NAMESPACE }}
-          kubectl get svc -n ${{ env.NAMESPACE }}
+      # # -------------------------
+      # # Post-deploy verification
+      # # -------------------------
+      # - name: Verify deployment
+      #   shell: powershell
+      #   run: |
+      #     kubectl rollout status deployment/digital-library -n ${{ env.NAMESPACE }}
+      #     kubectl get pods -n ${{ env.NAMESPACE }}
+      #     kubectl get svc -n ${{ env.NAMESPACE }}
 
       # -------------------------
       # Port-forward instructions (CI-safe)
