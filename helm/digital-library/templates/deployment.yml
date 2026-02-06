@@ -26,5 +26,5 @@ spec:
       volumes:
         - name: media
           hostPath:
-            path: /run/desktop/mnt/host/c/digital-library-data
+            path: /run/desktop/mnt/host/c/Digital-library-data
             type: Directory

@@ -79,9 +79,9 @@ jobs:
           --create-namespace `
           --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} `
           --set image.tag=${{ github.sha }} `
-          --atomic `
+          # --atomic `
           --wait `
-          --timeout 15m
+          --timeout 2m
 
     # -------------------------
     # Rollout Verification
