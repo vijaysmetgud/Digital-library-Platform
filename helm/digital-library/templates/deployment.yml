@@ -12,10 +12,12 @@ spec:
       labels:
         app: digital-library
     spec:
+
       containers:
         - name: digital-library
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           ports:
             - containerPort: 80
 
@@ -23,8 +25,8 @@ spec:
             - name: media
               mountPath: /usr/share/nginx/html/assets
 
-          volumes:
-            - name: media
-              hostPath:
-                path: /run/desktop/mnt/host/c/Digital-library-data
-                type: Directory
+      volumes:                      # ✅ CORRECT PLACE
+        - name: media
+          hostPath:
+            path: /run/desktop/mnt/host/c/Digital-library-data
+            type: Directory
