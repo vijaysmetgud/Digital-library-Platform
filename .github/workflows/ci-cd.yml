@@ -38,10 +38,10 @@ jobs:
       # Helm deploy
       # -------------------------
       - name: Deploy with Helm
-        run: |
-          helm upgrade --install digital-library ./helm/digital-library \
-            -n ${{ env.NAMESPACE }} \
-            -f helm/digital-library/values-dev.yaml \
-            --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} \
-            --set image.tag=${{ github.sha }} \
+        shell: powershell
+        jobs:
+            --create-namespace `
+            --set image.repository=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }} `
+            --set image.tag=${{ github.sha }} `
+            --atomic `
             --wait
