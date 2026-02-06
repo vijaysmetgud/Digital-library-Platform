@@ -28,3 +28,9 @@ spec:
           hostPath:
             path: /run/desktop/mnt/host/c/Digital-library-data
             type: Directory
+      
+
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: digital-library-media
