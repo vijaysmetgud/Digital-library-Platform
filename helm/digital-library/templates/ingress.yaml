@@ -17,4 +17,3 @@ spec:
                 name: digital-library-service
                 port:
                   number: 80
-a
