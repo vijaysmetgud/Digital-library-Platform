@@ -1,16 +1,12 @@
 replicaCount: 2
 
 image:
-  repository: digital-library-secure   # overridden by CI
-  tag: a00425209061b48a913c95ffaacebca74112bc55                            # placeholder only
-  pullPolicy: Always                  # ✅ REQUIRED
-
-# service:
-#   type: NodePort
-#   port: 80
-#   nodePort: 30080
+  repository: digital-library-frontend
+  tag: latest
+  pullPolicy: IfNotPresent
 
 
 service:
-  type: LoadBalancer
+  type: NodePort
   port: 80
+  nodePort: 30080
